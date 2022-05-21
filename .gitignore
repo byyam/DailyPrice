@@ -26,3 +26,6 @@ vendor/
 
 # Vscode files
 .vscode
+
+cmd/cmd
+
