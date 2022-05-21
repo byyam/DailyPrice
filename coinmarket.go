@@ -8,7 +8,8 @@ type CoinMarketQuote struct {
 }
 
 type CoinMarketPrice struct {
-	Price float64 `json:"price"`
+	Price     float64 `json:"price"`
+	Volume24h float64 `json:"volume_24h"`
 }
 
 type CoinMarketData struct {

@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 var (
@@ -35,7 +36,7 @@ func GetPrice(cm *DailyPrice.CoinMarket) error {
 
 	q := url.Values{}
 	q.Add("start", "1")
-	q.Add("limit", "2")
+	q.Add("limit", "5")
 	q.Add("convert", "USD")
 
 	req.Header.Set("Accepts", "application/json")
@@ -65,10 +66,16 @@ func PushMsg(cm DailyPrice.CoinMarket) error {
 	u.RawQuery = q.Encode()
 	log.Println("push url:", u.String())
 
+	var contents []string
+	for _, data := range cm.Data {
+		content := fmt.Sprintf("%s\nprice:%f\nvolume_24h:%f\n", data.Name, data.Quote.USD.Price, data.Quote.USD.Volume24h)
+		contents = append(contents, content)
+	}
+
 	msg := DailyPrice.PushMsg{
 		MsgType: "text",
 		Text: DailyPrice.PushMsgText{
-			Content: fmt.Sprintf("name: %s, price:%f", cm.Data[0].Name, cm.Data[0].Quote.USD.Price),
+			Content: strings.Join(contents, "\n"),
 		},
 	}
 	data, err := json.Marshal(&msg)
